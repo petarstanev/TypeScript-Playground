@@ -1,10 +1,10 @@
 import './App.css'
-import Omit from './components/Omit'
+import CodeEditor from './components/TSValidateCodeEditor'
 
 function App() {
   return (
     <>
-      <Omit />
+      <CodeEditor />
     </>
   )
 }

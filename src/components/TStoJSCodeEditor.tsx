@@ -11,7 +11,7 @@ function compileTypeScript(code: string) {
     return result.outputText;
 }
 
-const Omit = () => {
+const CodeEditor = () => {
     const [tsCode, setTsCode] = useState(omitExample);//TODO: Change to Enums
     const [jsCode, setJsCode] = useState("");
 
@@ -28,12 +28,14 @@ const Omit = () => {
             defaultLanguage="typescript"
             value={tsCode}
             onChange={(value) => setTsCode(value || "")} />
-        <button onClick={handleRunCode}>Run Code</button>
+        {/* <button onClick={handleRunCode}>Run Code</button>
         <Editor height="500px" width="1000px"
             defaultLanguage="javascript"
             value={jsCode}
-        />
+        /> */}
+
+        <button onClick={() => { setTsCode(partialExample) }}>Validate</button>
     </>
 }
 
-export default Omit;
+export default CodeEditor;
