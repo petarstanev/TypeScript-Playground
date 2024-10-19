@@ -1,20 +1,19 @@
 import Editor from "@monaco-editor/react";
 import { useState } from "react";
-// import * as ts from "typescript";
 import { createProjectSync, ts } from "@ts-morph/bootstrap";
 
-// import omitExample from './examples/omit';
-import { init, validate } from "../challenges/HelloWorld/init";
+import challenge from "../challenges/HelloWorld";
 import { types } from "../challenges/types";
-//TODO Change files to be .ts and import them
-
 
 const CodeEditor = () => {
-    const [tsCode, setTsCode] = useState(init);
-    // const [validateCode, setValidateCode] = useState(validate);
+    const [tsCode, setTsCode] = useState(challenge.init);
+    const [isValid, setIsValidCode] = useState(false);
 
-    function compileTypeScript() {
-        const wholeCode = types + ' ' + tsCode + ' ' + validate;
+    function validateCode() {
+        const wholeCode = types + tsCode + `
+        type cases = [
+            ${challenge.tests}
+        ]`;
         const project = createProjectSync({ useInMemoryFileSystem: true });
 
         project.createSourceFile(
@@ -23,25 +22,23 @@ const CodeEditor = () => {
         );
 
         const program = project.createProgram();
-        const errors = ts.getPreEmitDiagnostics(program); // check these
 
-        return errors;
+        const errors = ts.getPreEmitDiagnostics(program);
+        console.log(errors);
+        setIsValidCode(() => errors.length === 0);
     }
 
-    const validateCode = () => {
-        const compiledCode = compileTypeScript();
-        console.log(compiledCode);
-    };
-
     return <>
+        <h2>
+            {challenge.description}
+        </h2>
         <Editor height="500px" width="500px"
             defaultLanguage="typescript"
             value={tsCode}
             onChange={(value) => setTsCode(value || "")} />
-
-        <Editor height="500px" width="500px"
-            defaultLanguage="typescript"
-            defaultValue={validate} />
+        <ul>
+            {challenge.tests.map(challenge => <li key={challenge} style={{ backgroundColor: isValid ? 'green' : 'red' }}>{challenge}</li>)}
+        </ul>
 
         <button onClick={validateCode}>Validate solution</button>
     </>
